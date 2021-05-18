@@ -34,28 +34,44 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/FeatureLayer"], function (require, exports, WebMap, MapView, FeatureLayer) {
+define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/support/popupUtils", "./renderers"], function (require, exports, WebMap, MapView, FeatureLayer, popupUtils_1, renderers_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     (function () { return __awaiter(void 0, void 0, void 0, function () {
         var structures, map, view;
         return __generator(this, function (_a) {
-            structures = new FeatureLayer({
-                portalItem: {
-                    id: "8d47d8981c514666b7c98196d63d1086"
-                }
-            });
-            map = new WebMap({
-                basemap: "dark-gray-vector",
-                layers: [structures]
-            });
-            view = new MapView({
-                map: map,
-                container: "viewDiv",
-                center: [-118.244, 34.052],
-                zoom: 12
-            });
-            return [2 /*return*/];
+            switch (_a.label) {
+                case 0:
+                    structures = new FeatureLayer({
+                        portalItem: {
+                            id: "8d47d8981c514666b7c98196d63d1086"
+                        },
+                        popupEnabled: true
+                    });
+                    map = new WebMap({
+                        basemap: "gray-vector",
+                        layers: [structures]
+                    });
+                    view = new MapView({
+                        map: map,
+                        container: "viewDiv",
+                        center: [-118.244, 34.052],
+                        zoom: 12,
+                    });
+                    return [4 /*yield*/, view.when()];
+                case 1:
+                    _a.sent();
+                    return [4 /*yield*/, structures.when()];
+                case 2:
+                    _a.sent();
+                    structures.popupTemplate = popupUtils_1.createPopupTemplate({
+                        title: "test",
+                        fields: structures.fields
+                    });
+                    structures.renderer = renderers_1.renderer;
+                    view.goTo(structures.fullExtent);
+                    return [2 /*return*/];
+            }
         });
     }); })();
 });
