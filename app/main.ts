@@ -1,11 +1,21 @@
+import esri = __esri;
+
 import WebMap = require("esri/WebMap");
 import MapView = require("esri/views/MapView");
 import FeatureLayer = require("esri/layers/FeatureLayer");
 import PopupTemplate = require("esri/PopupTemplate");
+import LayerList = require("esri/widgets/LayerList");
+import ActionButton = require("esri/support/actions/ActionButton");
 import { createPopupTemplate } from "esri/support/popupUtils";
-import { renderer } from "./renderers";
+
+
+import { accessRdWurmanRenderer, foundationWurmanRenderer, padSiteWurmanRenderer, stackedRenderer, structureWurmanRenderer, wirePullWurmanRenderer } from "./renderers";
+import { layer } from "esri/views/3d/support/LayerPerformanceInfo";
+import { buffer } from "esri/geometry/geometryEngine";
 
 ( async () => {
+
+  const buff = buffer
 
   const structures = new FeatureLayer({
     portalItem: {
@@ -23,21 +33,99 @@ import { renderer } from "./renderers";
     map,
     container: "viewDiv",
     center: [ -118.244, 34.052],
-    zoom: 12,
-    // popup: {
-    //   defaultPopupTemplateEnabled: true
-    // }
+    zoom: 12
+  });
+
+  const renderers = [
+    {
+      renderer: stackedRenderer,
+      id: "stacked-renderer",
+      action: new ActionButton({
+        className: "esri-icon-maps",
+        title: "Stacked renderer",
+        id: "stacked-renderer"
+      })
+    },
+    {
+      renderer: accessRdWurmanRenderer,
+      id: "access-roads",
+      action: new ActionButton({
+        className: "esri-icon-maps",
+        title: "Access Roads",
+        id: "access-roads"
+      })
+    },
+    {
+      renderer: padSiteWurmanRenderer,
+      id: "pad-site",
+      action: new ActionButton({
+        className: "esri-icon-maps",
+        title: "Pad Site",
+        id: "pad-site"
+      })
+    },
+    {
+      renderer: foundationWurmanRenderer,
+      id: "foundation",
+      action: new ActionButton({
+        className: "esri-icon-maps",
+        title: "Foundation",
+        id: "foundation"
+      })
+    },
+    {
+      renderer: structureWurmanRenderer,
+      id: "structure",
+      action: new ActionButton({
+        className: "esri-icon-maps",
+        title: "Structure",
+        id: "structure"
+      })
+    },
+    {
+      renderer: wirePullWurmanRenderer,
+      id: "wire-pull",
+      action: new ActionButton({
+        className: "esri-icon-maps",
+        title: "Wire Pull",
+        id: "wire-pull"
+      })
+    }
+  ];
+
+  const layerList = new LayerList({
+    view,
+    listItemCreatedFunction: (event) => {
+      const item = event.item as esri.ListItem;
+      item.actionsSections = [ renderers.map( renderer => renderer.action ) ] as any;
+      item.actionsOpen = true;
+    }
+  });
+  view.ui.add(layerList, "top-right");
+
+  layerList.on("trigger-action", (event) => {
+    const { action } = event;
+    const { id } = action as esri.ActionButton;
+
+    const selectedRenderer = renderers.find( renderer => renderer.id === id );
+    (structures as FeatureLayer).renderer = selectedRenderer.renderer;
   });
 
   await view.when();
   await structures.when();
+
   structures.popupTemplate = createPopupTemplate({
     title: "test",
     fields: structures.fields
   });
 
-  structures.renderer = renderer;
+  structures.renderer = stackedRenderer;
+  await view.goTo(structures.fullExtent);
 
-  view.goTo(structures.fullExtent);
+  view.constraints = {
+    geometry: structures.fullExtent,
+    maxScale: 0,
+    minScale: view.scale
+  };
 
 })()

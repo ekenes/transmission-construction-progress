@@ -1,4 +1,4 @@
-export const size = 20;
+export const size = 10;
 
 export const cimCircleGeometry = {
   rings: [

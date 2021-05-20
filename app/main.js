@@ -34,14 +34,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/support/popupUtils", "./renderers"], function (require, exports, WebMap, MapView, FeatureLayer, popupUtils_1, renderers_1) {
+define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/widgets/LayerList", "esri/support/actions/ActionButton", "esri/support/popupUtils", "./renderers", "esri/geometry/geometryEngine"], function (require, exports, WebMap, MapView, FeatureLayer, LayerList, ActionButton, popupUtils_1, renderers_1, geometryEngine_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     (function () { return __awaiter(void 0, void 0, void 0, function () {
-        var structures, map, view;
+        var buff, structures, map, view, renderers, layerList;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    buff = geometryEngine_1.buffer;
                     structures = new FeatureLayer({
                         portalItem: {
                             id: "8d47d8981c514666b7c98196d63d1086"
@@ -56,7 +57,78 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                         map: map,
                         container: "viewDiv",
                         center: [-118.244, 34.052],
-                        zoom: 12,
+                        zoom: 12
+                    });
+                    renderers = [
+                        {
+                            renderer: renderers_1.stackedRenderer,
+                            id: "stacked-renderer",
+                            action: new ActionButton({
+                                className: "esri-icon-maps",
+                                title: "Stacked renderer",
+                                id: "stacked-renderer"
+                            })
+                        },
+                        {
+                            renderer: renderers_1.accessRdWurmanRenderer,
+                            id: "access-roads",
+                            action: new ActionButton({
+                                className: "esri-icon-maps",
+                                title: "Access Roads",
+                                id: "access-roads"
+                            })
+                        },
+                        {
+                            renderer: renderers_1.padSiteWurmanRenderer,
+                            id: "pad-site",
+                            action: new ActionButton({
+                                className: "esri-icon-maps",
+                                title: "Pad Site",
+                                id: "pad-site"
+                            })
+                        },
+                        {
+                            renderer: renderers_1.foundationWurmanRenderer,
+                            id: "foundation",
+                            action: new ActionButton({
+                                className: "esri-icon-maps",
+                                title: "Foundation",
+                                id: "foundation"
+                            })
+                        },
+                        {
+                            renderer: renderers_1.structureWurmanRenderer,
+                            id: "structure",
+                            action: new ActionButton({
+                                className: "esri-icon-maps",
+                                title: "Structure",
+                                id: "structure"
+                            })
+                        },
+                        {
+                            renderer: renderers_1.wirePullWurmanRenderer,
+                            id: "wire-pull",
+                            action: new ActionButton({
+                                className: "esri-icon-maps",
+                                title: "Wire Pull",
+                                id: "wire-pull"
+                            })
+                        }
+                    ];
+                    layerList = new LayerList({
+                        view: view,
+                        listItemCreatedFunction: function (event) {
+                            var item = event.item;
+                            item.actionsSections = [renderers.map(function (renderer) { return renderer.action; })];
+                            item.actionsOpen = true;
+                        }
+                    });
+                    view.ui.add(layerList, "top-right");
+                    layerList.on("trigger-action", function (event) {
+                        var action = event.action;
+                        var id = action.id;
+                        var selectedRenderer = renderers.find(function (renderer) { return renderer.id === id; });
+                        structures.renderer = selectedRenderer.renderer;
                     });
                     return [4 /*yield*/, view.when()];
                 case 1:
@@ -68,8 +140,15 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                         title: "test",
                         fields: structures.fields
                     });
-                    structures.renderer = renderers_1.renderer;
-                    view.goTo(structures.fullExtent);
+                    structures.renderer = renderers_1.stackedRenderer;
+                    return [4 /*yield*/, view.goTo(structures.fullExtent)];
+                case 3:
+                    _a.sent();
+                    view.constraints = {
+                        geometry: structures.fullExtent,
+                        maxScale: 0,
+                        minScale: view.scale
+                    };
                     return [2 /*return*/];
             }
         });

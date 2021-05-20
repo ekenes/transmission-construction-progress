@@ -8,7 +8,7 @@ define(["require", "exports", "esri/renderers", "esri/symbols", "esri/Color", ".
     var colors2 = ["#ccb642", "#6998b4", "#a67474", "#6bb38f", "#9a6bb3", "#bf8739", "#96aedc"];
     var colors3 = ["#b30000", "#7c1158", "#4421af", "#1a53ff", "#00b7c7", "#8be04e", "#ebdc78"];
     var colors = colors3.map(function (color) { return new Color(color).toJSON(); });
-    exports.renderer = new renderers_1.SimpleRenderer({
+    exports.stackedRenderer = new renderers_1.SimpleRenderer({
         symbol: new symbols_1.CIMSymbol({
             data: {
                 type: "CIMSymbolReference",
@@ -29,26 +29,20 @@ define(["require", "exports", "esri/renderers", "esri/symbols", "esri/Color", ".
                             isRing: true
                         }),
                         symbolUtils_1.createCircleSymbolLayer({
-                            primitiveName: "grillages-ring",
-                            anchorPoint: { x: 0, y: 2 },
-                            color: colors[1],
-                            isRing: true
-                        }),
-                        symbolUtils_1.createCircleSymbolLayer({
                             primitiveName: "foundation-ring",
-                            anchorPoint: { x: 0, y: 3 },
+                            anchorPoint: { x: 0, y: 2 },
                             color: colors[2],
                             isRing: true
                         }),
                         symbolUtils_1.createCircleSymbolLayer({
                             primitiveName: "structure-ring",
-                            anchorPoint: { x: 0, y: 4 },
+                            anchorPoint: { x: 0, y: 3 },
                             color: colors[4],
                             isRing: true
                         }),
                         symbolUtils_1.createCircleSymbolLayer({
                             primitiveName: "wire-pull-ring",
-                            anchorPoint: { x: 0, y: 5 },
+                            anchorPoint: { x: 0, y: 4 },
                             color: colors[5],
                             isRing: true
                         }),
@@ -66,26 +60,20 @@ define(["require", "exports", "esri/renderers", "esri/symbols", "esri/Color", ".
                             isRing: false
                         }),
                         symbolUtils_1.createCircleSymbolLayer({
-                            primitiveName: "grillages-fill",
-                            anchorPoint: { x: 0, y: 2 },
-                            color: colors[1],
-                            isRing: false
-                        }),
-                        symbolUtils_1.createCircleSymbolLayer({
                             primitiveName: "foundation-fill",
-                            anchorPoint: { x: 0, y: 3 },
+                            anchorPoint: { x: 0, y: 2 },
                             color: colors[2],
                             isRing: false
                         }),
                         symbolUtils_1.createCircleSymbolLayer({
                             primitiveName: "structure-fill",
-                            anchorPoint: { x: 0, y: 4 },
+                            anchorPoint: { x: 0, y: 3 },
                             color: colors[4],
                             isRing: false
                         }),
                         symbolUtils_1.createCircleSymbolLayer({
                             primitiveName: "wire-pull-fill",
-                            anchorPoint: { x: 0, y: 5 },
+                            anchorPoint: { x: 0, y: 4 },
                             color: colors[5],
                             isRing: false
                         })
@@ -100,17 +88,6 @@ define(["require", "exports", "esri/renderers", "esri/symbols", "esri/Color", ".
                             type: "CIMExpressionInfo",
                             title: "Access road progress",
                             expression: createExpression("Access_Rd"),
-                            returnType: "Default"
-                        }
-                    },
-                    {
-                        type: "CIMPrimitiveOverride",
-                        primitiveName: "grillages-fill",
-                        propertyName: "Size",
-                        valueExpressionInfo: {
-                            type: "CIMExpressionInfo",
-                            title: "Access road progress",
-                            expression: createExpression("Grillages"),
                             returnType: "Default"
                         }
                     },
@@ -165,5 +142,200 @@ define(["require", "exports", "esri/renderers", "esri/symbols", "esri/Color", ".
     function createExpression(fieldName) {
         return "\n    var progress = Decode($feature." + fieldName + ",\n      \"100% Complete\", 1,\n      \"75% Complete\", 0.75,\n      \"50% Complete\", 0.50,\n      \"25% Complete\", 0.25,\n      \"Not Started\", 0,\n      \"NA\", 1,\n    -1);\n\n    var outerSize = " + symbolUtils_1.size + ";\n    var innerSize = outerSize * progress;\n    return IIF( innerSize < 0, 0, innerSize );\n  ";
     }
+    exports.accessRdWurmanRenderer = new renderers_1.SimpleRenderer({
+        symbol: new symbols_1.CIMSymbol({
+            data: {
+                type: "CIMSymbolReference",
+                symbol: {
+                    type: "CIMPointSymbol",
+                    symbolLayers: [
+                        // rings
+                        symbolUtils_1.createCircleSymbolLayer({
+                            primitiveName: "access-rd-ring",
+                            anchorPoint: { x: 0, y: 0 },
+                            color: colors[0],
+                            isRing: true
+                        }),
+                        // fills
+                        symbolUtils_1.createCircleSymbolLayer({
+                            primitiveName: "access-rd-fill",
+                            anchorPoint: { x: 0, y: 0 },
+                            color: colors[0],
+                            isRing: false
+                        })
+                    ]
+                },
+                primitiveOverrides: [
+                    {
+                        type: "CIMPrimitiveOverride",
+                        primitiveName: "access-rd-fill",
+                        propertyName: "Size",
+                        valueExpressionInfo: {
+                            type: "CIMExpressionInfo",
+                            title: "Access road progress",
+                            expression: createExpression("Access_Rd"),
+                            returnType: "Default"
+                        }
+                    }
+                ]
+            }
+        })
+    });
+    exports.padSiteWurmanRenderer = new renderers_1.SimpleRenderer({
+        symbol: new symbols_1.CIMSymbol({
+            data: {
+                type: "CIMSymbolReference",
+                symbol: {
+                    type: "CIMPointSymbol",
+                    symbolLayers: [
+                        // rings
+                        symbolUtils_1.createCircleSymbolLayer({
+                            primitiveName: "pad-site-ring",
+                            anchorPoint: { x: 0, y: 0 },
+                            color: colors[3],
+                            isRing: true
+                        }),
+                        // fills
+                        symbolUtils_1.createCircleSymbolLayer({
+                            primitiveName: "pad-site-fill",
+                            anchorPoint: { x: 0, y: 0 },
+                            color: colors[3],
+                            isRing: false
+                        })
+                    ]
+                },
+                primitiveOverrides: [
+                    {
+                        type: "CIMPrimitiveOverride",
+                        primitiveName: "pad-site-fill",
+                        propertyName: "Size",
+                        valueExpressionInfo: {
+                            type: "CIMExpressionInfo",
+                            title: "Access road progress",
+                            expression: createExpression("Pad_Site"),
+                            returnType: "Default"
+                        }
+                    }
+                ]
+            }
+        })
+    });
+    exports.foundationWurmanRenderer = new renderers_1.SimpleRenderer({
+        symbol: new symbols_1.CIMSymbol({
+            data: {
+                type: "CIMSymbolReference",
+                symbol: {
+                    type: "CIMPointSymbol",
+                    symbolLayers: [
+                        // rings
+                        symbolUtils_1.createCircleSymbolLayer({
+                            primitiveName: "foundation-ring",
+                            anchorPoint: { x: 0, y: 0 },
+                            color: colors[2],
+                            isRing: true
+                        }),
+                        // fills
+                        symbolUtils_1.createCircleSymbolLayer({
+                            primitiveName: "foundation-fill",
+                            anchorPoint: { x: 0, y: 0 },
+                            color: colors[2],
+                            isRing: false
+                        })
+                    ]
+                },
+                primitiveOverrides: [
+                    {
+                        type: "CIMPrimitiveOverride",
+                        primitiveName: "foundation-fill",
+                        propertyName: "Size",
+                        valueExpressionInfo: {
+                            type: "CIMExpressionInfo",
+                            title: "Access road progress",
+                            expression: createExpression("Foundation"),
+                            returnType: "Default"
+                        }
+                    }
+                ]
+            }
+        })
+    });
+    exports.structureWurmanRenderer = new renderers_1.SimpleRenderer({
+        symbol: new symbols_1.CIMSymbol({
+            data: {
+                type: "CIMSymbolReference",
+                symbol: {
+                    type: "CIMPointSymbol",
+                    symbolLayers: [
+                        // rings
+                        symbolUtils_1.createCircleSymbolLayer({
+                            primitiveName: "structure-ring",
+                            anchorPoint: { x: 0, y: 0 },
+                            color: colors[4],
+                            isRing: true
+                        }),
+                        // fills
+                        symbolUtils_1.createCircleSymbolLayer({
+                            primitiveName: "structure-fill",
+                            anchorPoint: { x: 0, y: 0 },
+                            color: colors[4],
+                            isRing: false
+                        })
+                    ]
+                },
+                primitiveOverrides: [
+                    {
+                        type: "CIMPrimitiveOverride",
+                        primitiveName: "structure-fill",
+                        propertyName: "Size",
+                        valueExpressionInfo: {
+                            type: "CIMExpressionInfo",
+                            title: "Access road progress",
+                            expression: createExpression("Structure"),
+                            returnType: "Default"
+                        }
+                    }
+                ]
+            }
+        })
+    });
+    exports.wirePullWurmanRenderer = new renderers_1.SimpleRenderer({
+        symbol: new symbols_1.CIMSymbol({
+            data: {
+                type: "CIMSymbolReference",
+                symbol: {
+                    type: "CIMPointSymbol",
+                    symbolLayers: [
+                        // rings
+                        symbolUtils_1.createCircleSymbolLayer({
+                            primitiveName: "wire-pull-ring",
+                            anchorPoint: { x: 0, y: 0 },
+                            color: colors[5],
+                            isRing: true
+                        }),
+                        // fills
+                        symbolUtils_1.createCircleSymbolLayer({
+                            primitiveName: "wire-pull-fill",
+                            anchorPoint: { x: 0, y: 0 },
+                            color: colors[5],
+                            isRing: false
+                        })
+                    ]
+                },
+                primitiveOverrides: [
+                    {
+                        type: "CIMPrimitiveOverride",
+                        primitiveName: "wire-pull-fill",
+                        propertyName: "Size",
+                        valueExpressionInfo: {
+                            type: "CIMExpressionInfo",
+                            title: "Access road progress",
+                            expression: createExpression("Wire_Pull"),
+                            returnType: "Default"
+                        }
+                    }
+                ]
+            }
+        })
+    });
 });
 //# sourceMappingURL=renderers.js.map

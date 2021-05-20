@@ -1,7 +1,7 @@
 define(["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.size = 20;
+    exports.size = 10;
     exports.cimCircleGeometry = {
         rings: [
             [
