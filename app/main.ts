@@ -8,9 +8,7 @@ import LayerList = require("esri/widgets/LayerList");
 import ActionButton = require("esri/support/actions/ActionButton");
 import { createPopupTemplate } from "esri/support/popupUtils";
 
-
-import { accessRdWurmanRenderer, foundationWurmanRenderer, padSiteWurmanRenderer, stackedRenderer, structureWurmanRenderer, wirePullWurmanRenderer } from "./renderers";
-import { layer } from "esri/views/3d/support/LayerPerformanceInfo";
+import { accessRdWebStyleRenderer, accessRdWurmanRenderer, foundationWebStyleRenderer, foundationWurmanRenderer, padSiteWebStyleRenderer, padSiteWurmanRenderer, stackedRenderer, structureWebStyleRenderer, structureWurmanRenderer, wirePullWebStyleRenderer, wirePullWurmanRenderer } from "./renderers";
 import { buffer } from "esri/geometry/geometryEngine";
 
 ( async () => {
@@ -89,6 +87,53 @@ import { buffer } from "esri/geometry/geometryEngine";
         className: "esri-icon-maps",
         title: "Wire Pull",
         id: "wire-pull"
+      })
+    },
+
+
+    {
+      renderer: accessRdWebStyleRenderer,
+      id: "access-roads-webstyle",
+      action: new ActionButton({
+        className: "esri-icon-maps",
+        title: "Access Roads (Web style)",
+        id: "access-roads-webstyle"
+      })
+    },
+    {
+      renderer: padSiteWebStyleRenderer,
+      id: "pad-site-webstyle",
+      action: new ActionButton({
+        className: "esri-icon-maps",
+        title: "Pad Site (Web style)",
+        id: "pad-site-webstyle"
+      })
+    },
+    {
+      renderer: foundationWebStyleRenderer,
+      id: "foundation-webstyle",
+      action: new ActionButton({
+        className: "esri-icon-maps",
+        title: "Foundation (Web style)",
+        id: "foundation-webstyle"
+      })
+    },
+    {
+      renderer: structureWebStyleRenderer,
+      id: "structure-webstyle",
+      action: new ActionButton({
+        className: "esri-icon-maps",
+        title: "Structure (Web style)",
+        id: "structure-webstyle"
+      })
+    },
+    {
+      renderer: wirePullWebStyleRenderer,
+      id: "wire-pull-webstyle",
+      action: new ActionButton({
+        className: "esri-icon-maps",
+        title: "Wire Pull (Web style)",
+        id: "wire-pull-webstyle"
       })
     }
   ];

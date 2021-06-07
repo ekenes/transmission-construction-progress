@@ -1,3 +1,7 @@
+import { CIMSymbol, WebStyleSymbol } from "esri/symbols";
+import { applyCIMSymbolColor, scaleCIMSymbolTo } from "esri/symbols/support/cimSymbolUtils";
+import Color = require("esri/Color");
+
 export const size = 10;
 
 export const cimCircleGeometry = {
@@ -95,4 +99,30 @@ export function createCircleSymbolLayer (params: CreateSymbolLayerParams){
     scaleSymbolsProportionally: true,
     respectFrame: true
   } as any;
+}
+
+interface ColorizeWebStyleSymbolParams {
+  symbol: WebStyleSymbol;
+  color: Color;
+}
+
+export async function colorizeWebStyleSymbol(params: ColorizeWebStyleSymbolParams): Promise<CIMSymbol> {
+  const { symbol, color } = params;
+
+  const cimSymbol = await symbol.fetchCIMSymbol();
+  applyCIMSymbolColor(cimSymbol, color);
+
+  return cimSymbol;
+}
+
+interface ColorizeCIMSymbolParams {
+  symbol: CIMSymbol;
+  color: Color;
+}
+
+export function colorizeCIMSymbol(params: ColorizeCIMSymbolParams) {
+  const { symbol, color } = params;
+  applyCIMSymbolColor(symbol, color);
+  scaleCIMSymbolTo(symbol, 32);
+  return symbol.clone();
 }

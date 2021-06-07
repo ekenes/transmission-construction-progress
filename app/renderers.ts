@@ -1,7 +1,9 @@
-import { SimpleRenderer } from "esri/renderers";
+import { SimpleRenderer, UniqueValueRenderer } from "esri/renderers";
 import { CIMSymbol } from "esri/symbols";
 import Color = require("esri/Color");
-import { cimCircleGeometry, createCircleSymbolLayer, size } from "./symbolUtils";
+import UniqueValueInfo = require("esri/renderers/support/UniqueValueInfo");
+import { colorizeCIMSymbol, createCircleSymbolLayer, size } from "./symbolUtils";
+import { BarrierCIMSymbol, Forest_RoadCIMSymbol, FoundationCIMSymbol, PowerlineCIMSymbol, TowerCIMSymbol } from "./webStyles";
 
 // #b30000|#7c1158|#4421af|#1a53ff|#00b7c7|#8be04e|#ebdc78
 // #437a75|#d9d78c|#bf7860|#72231f|#afbfa2|#5a9bc8|#89a6a6
@@ -9,6 +11,7 @@ const colors1 = ["#437a75", "#d9d78c", "#bf7860", "#72231f", "#afbfa2", "#5a9bc8
 // #ccb642|#6998b4|#a67474|#6bb38f|#9a6bb3|#bf8739|#96aedc
 const colors2 = ["#ccb642", "#6998b4", "#a67474", "#6bb38f", "#9a6bb3", "#bf8739", "#96aedc"];
 const colors3 = ["#b30000", "#7c1158", "#4421af", "#1a53ff", "#00b7c7", "#8be04e", "#ebdc78"];
+const colors4 = ["#7c1158", "#1a53ff", "#00b7c7", "#8be04e", "#ebdc78"];
 
 const colors = colors3.map(color => new Color(color).toJSON());
 
@@ -161,6 +164,10 @@ function createExpression(fieldName: string){
     return IIF( innerSize < 0, 0, innerSize );
   `;
 }
+
+
+
+// Wurman renderers
 
 export const accessRdWurmanRenderer = new SimpleRenderer({
   symbol: new CIMSymbol({
@@ -366,3 +373,53 @@ export const wirePullWurmanRenderer = new SimpleRenderer({
     }
   })
 });
+
+// Web style renderers
+
+export const accessRdWebStyleRenderer = createUniqueValueRenderer(Forest_RoadCIMSymbol, "Access_Rd");
+
+export const padSiteWebStyleRenderer = createUniqueValueRenderer(BarrierCIMSymbol, "Pad_Site");
+
+export const foundationWebStyleRenderer = createUniqueValueRenderer(FoundationCIMSymbol, "Foundation");
+
+export const structureWebStyleRenderer = createUniqueValueRenderer(TowerCIMSymbol, "Structure");
+
+export const wirePullWebStyleRenderer = createUniqueValueRenderer(PowerlineCIMSymbol, "Wire_Pull");
+
+
+function createUniqueValueRenderer(symbol: CIMSymbol, field: string): UniqueValueRenderer {
+  return new UniqueValueRenderer({
+    field,
+    uniqueValueInfos: [
+      new UniqueValueInfo({
+        value: "100% Complete",
+        label: "100% Complete",
+        symbol: colorizeCIMSymbol({ symbol, color: new Color(colors4[4]) }),
+      }),
+
+      new UniqueValueInfo({
+        value: "75% Complete",
+        label: "75% Complete",
+        symbol: colorizeCIMSymbol({ symbol, color: new Color(colors4[3]) }),
+      }),
+
+      new UniqueValueInfo({
+        value: "50% Complete",
+        label: "50% Complete",
+        symbol: colorizeCIMSymbol({ symbol, color: new Color(colors4[2]) }),
+      }),
+
+      new UniqueValueInfo({
+        value: "25% Complete",
+        label: "25% Complete",
+        symbol: colorizeCIMSymbol({ symbol, color: new Color(colors4[1]) }),
+      }),
+
+      new UniqueValueInfo({
+        value: "Not Started",
+        label: "Not started",
+        symbol: colorizeCIMSymbol({ symbol, color: new Color(colors4[0]) }),
+      })
+    ]
+  });
+}

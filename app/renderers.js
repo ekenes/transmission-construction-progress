@@ -1,4 +1,4 @@
-define(["require", "exports", "esri/renderers", "esri/symbols", "esri/Color", "./symbolUtils"], function (require, exports, renderers_1, symbols_1, Color, symbolUtils_1) {
+define(["require", "exports", "esri/renderers", "esri/symbols", "esri/Color", "esri/renderers/support/UniqueValueInfo", "./symbolUtils", "./webStyles"], function (require, exports, renderers_1, symbols_1, Color, UniqueValueInfo, symbolUtils_1, webStyles_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     // #b30000|#7c1158|#4421af|#1a53ff|#00b7c7|#8be04e|#ebdc78
@@ -7,6 +7,7 @@ define(["require", "exports", "esri/renderers", "esri/symbols", "esri/Color", ".
     // #ccb642|#6998b4|#a67474|#6bb38f|#9a6bb3|#bf8739|#96aedc
     var colors2 = ["#ccb642", "#6998b4", "#a67474", "#6bb38f", "#9a6bb3", "#bf8739", "#96aedc"];
     var colors3 = ["#b30000", "#7c1158", "#4421af", "#1a53ff", "#00b7c7", "#8be04e", "#ebdc78"];
+    var colors4 = ["#7c1158", "#1a53ff", "#00b7c7", "#8be04e", "#ebdc78"];
     var colors = colors3.map(function (color) { return new Color(color).toJSON(); });
     exports.stackedRenderer = new renderers_1.SimpleRenderer({
         symbol: new symbols_1.CIMSymbol({
@@ -142,6 +143,7 @@ define(["require", "exports", "esri/renderers", "esri/symbols", "esri/Color", ".
     function createExpression(fieldName) {
         return "\n    var progress = Decode($feature." + fieldName + ",\n      \"100% Complete\", 1,\n      \"75% Complete\", 0.75,\n      \"50% Complete\", 0.50,\n      \"25% Complete\", 0.25,\n      \"Not Started\", 0,\n      \"NA\", 1,\n    -1);\n\n    var outerSize = " + symbolUtils_1.size + ";\n    var innerSize = outerSize * progress;\n    return IIF( innerSize < 0, 0, innerSize );\n  ";
     }
+    // Wurman renderers
     exports.accessRdWurmanRenderer = new renderers_1.SimpleRenderer({
         symbol: new symbols_1.CIMSymbol({
             data: {
@@ -337,5 +339,43 @@ define(["require", "exports", "esri/renderers", "esri/symbols", "esri/Color", ".
             }
         })
     });
+    // Web style renderers
+    exports.accessRdWebStyleRenderer = createUniqueValueRenderer(webStyles_1.Forest_RoadCIMSymbol, "Access_Rd");
+    exports.padSiteWebStyleRenderer = createUniqueValueRenderer(webStyles_1.BarrierCIMSymbol, "Pad_Site");
+    exports.foundationWebStyleRenderer = createUniqueValueRenderer(webStyles_1.FoundationCIMSymbol, "Foundation");
+    exports.structureWebStyleRenderer = createUniqueValueRenderer(webStyles_1.TowerCIMSymbol, "Structure");
+    exports.wirePullWebStyleRenderer = createUniqueValueRenderer(webStyles_1.PowerlineCIMSymbol, "Wire_Pull");
+    function createUniqueValueRenderer(symbol, field) {
+        return new renderers_1.UniqueValueRenderer({
+            field: field,
+            uniqueValueInfos: [
+                new UniqueValueInfo({
+                    value: "100% Complete",
+                    label: "100% Complete",
+                    symbol: symbolUtils_1.colorizeCIMSymbol({ symbol: symbol, color: new Color(colors4[4]) }),
+                }),
+                new UniqueValueInfo({
+                    value: "75% Complete",
+                    label: "75% Complete",
+                    symbol: symbolUtils_1.colorizeCIMSymbol({ symbol: symbol, color: new Color(colors4[3]) }),
+                }),
+                new UniqueValueInfo({
+                    value: "50% Complete",
+                    label: "50% Complete",
+                    symbol: symbolUtils_1.colorizeCIMSymbol({ symbol: symbol, color: new Color(colors4[2]) }),
+                }),
+                new UniqueValueInfo({
+                    value: "25% Complete",
+                    label: "25% Complete",
+                    symbol: symbolUtils_1.colorizeCIMSymbol({ symbol: symbol, color: new Color(colors4[1]) }),
+                }),
+                new UniqueValueInfo({
+                    value: "Not Started",
+                    label: "Not started",
+                    symbol: symbolUtils_1.colorizeCIMSymbol({ symbol: symbol, color: new Color(colors4[0]) }),
+                })
+            ]
+        });
+    }
 });
 //# sourceMappingURL=renderers.js.map

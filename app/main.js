@@ -113,6 +113,51 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                 title: "Wire Pull",
                                 id: "wire-pull"
                             })
+                        },
+                        {
+                            renderer: renderers_1.accessRdWebStyleRenderer,
+                            id: "access-roads-webstyle",
+                            action: new ActionButton({
+                                className: "esri-icon-maps",
+                                title: "Access Roads (Web style)",
+                                id: "access-roads-webstyle"
+                            })
+                        },
+                        {
+                            renderer: renderers_1.padSiteWebStyleRenderer,
+                            id: "pad-site-webstyle",
+                            action: new ActionButton({
+                                className: "esri-icon-maps",
+                                title: "Pad Site (Web style)",
+                                id: "pad-site-webstyle"
+                            })
+                        },
+                        {
+                            renderer: renderers_1.foundationWebStyleRenderer,
+                            id: "foundation-webstyle",
+                            action: new ActionButton({
+                                className: "esri-icon-maps",
+                                title: "Foundation (Web style)",
+                                id: "foundation-webstyle"
+                            })
+                        },
+                        {
+                            renderer: renderers_1.structureWebStyleRenderer,
+                            id: "structure-webstyle",
+                            action: new ActionButton({
+                                className: "esri-icon-maps",
+                                title: "Structure (Web style)",
+                                id: "structure-webstyle"
+                            })
+                        },
+                        {
+                            renderer: renderers_1.wirePullWebStyleRenderer,
+                            id: "wire-pull-webstyle",
+                            action: new ActionButton({
+                                className: "esri-icon-maps",
+                                title: "Wire Pull (Web style)",
+                                id: "wire-pull-webstyle"
+                            })
                         }
                     ];
                     layerList = new LayerList({
