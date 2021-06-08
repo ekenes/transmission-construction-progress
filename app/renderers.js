@@ -140,6 +140,138 @@ define(["require", "exports", "esri/renderers", "esri/symbols", "esri/Color", "e
             }
         })
     });
+    exports.stackedRendererWithTower = new renderers_1.SimpleRenderer({
+        symbol: new symbols_1.CIMSymbol({
+            data: {
+                type: "CIMSymbolReference",
+                symbol: {
+                    type: "CIMPointSymbol",
+                    symbolLayers: [
+                        symbolUtils_1.towerSymbolLayer,
+                        // rings
+                        symbolUtils_1.createCircleSymbolLayer({
+                            primitiveName: "access-rd-ring",
+                            anchorPoint: { x: 0, y: 0 },
+                            color: colors[0],
+                            isRing: true
+                        }),
+                        symbolUtils_1.createCircleSymbolLayer({
+                            primitiveName: "pad-site-ring",
+                            anchorPoint: { x: 0, y: 1 },
+                            color: colors[3],
+                            isRing: true
+                        }),
+                        symbolUtils_1.createCircleSymbolLayer({
+                            primitiveName: "foundation-ring",
+                            anchorPoint: { x: 0, y: 2 },
+                            color: colors[2],
+                            isRing: true
+                        }),
+                        symbolUtils_1.createCircleSymbolLayer({
+                            primitiveName: "structure-ring",
+                            anchorPoint: { x: 0, y: 3 },
+                            color: colors[4],
+                            isRing: true
+                        }),
+                        symbolUtils_1.createCircleSymbolLayer({
+                            primitiveName: "wire-pull-ring",
+                            anchorPoint: { x: 0, y: 4 },
+                            color: colors[5],
+                            isRing: true
+                        }),
+                        // fills
+                        symbolUtils_1.createCircleSymbolLayer({
+                            primitiveName: "access-rd-fill",
+                            anchorPoint: { x: 0, y: 0 },
+                            color: colors[0],
+                            isRing: false
+                        }),
+                        symbolUtils_1.createCircleSymbolLayer({
+                            primitiveName: "pad-site-fill",
+                            anchorPoint: { x: 0, y: 1 },
+                            color: colors[3],
+                            isRing: false
+                        }),
+                        symbolUtils_1.createCircleSymbolLayer({
+                            primitiveName: "foundation-fill",
+                            anchorPoint: { x: 0, y: 2 },
+                            color: colors[2],
+                            isRing: false
+                        }),
+                        symbolUtils_1.createCircleSymbolLayer({
+                            primitiveName: "structure-fill",
+                            anchorPoint: { x: 0, y: 3 },
+                            color: colors[4],
+                            isRing: false
+                        }),
+                        symbolUtils_1.createCircleSymbolLayer({
+                            primitiveName: "wire-pull-fill",
+                            anchorPoint: { x: 0, y: 4 },
+                            color: colors[5],
+                            isRing: false
+                        })
+                    ]
+                },
+                primitiveOverrides: [
+                    {
+                        type: "CIMPrimitiveOverride",
+                        primitiveName: "access-rd-fill",
+                        propertyName: "Size",
+                        valueExpressionInfo: {
+                            type: "CIMExpressionInfo",
+                            title: "Access road progress",
+                            expression: createExpression("Access_Rd"),
+                            returnType: "Default"
+                        }
+                    },
+                    {
+                        type: "CIMPrimitiveOverride",
+                        primitiveName: "foundation-fill",
+                        propertyName: "Size",
+                        valueExpressionInfo: {
+                            type: "CIMExpressionInfo",
+                            title: "Access road progress",
+                            expression: createExpression("Foundation"),
+                            returnType: "Default"
+                        }
+                    },
+                    {
+                        type: "CIMPrimitiveOverride",
+                        primitiveName: "pad-site-fill",
+                        propertyName: "Size",
+                        valueExpressionInfo: {
+                            type: "CIMExpressionInfo",
+                            title: "Access road progress",
+                            expression: createExpression("Pad_Site"),
+                            returnType: "Default"
+                        }
+                    },
+                    {
+                        type: "CIMPrimitiveOverride",
+                        primitiveName: "structure-fill",
+                        propertyName: "Size",
+                        valueExpressionInfo: {
+                            type: "CIMExpressionInfo",
+                            title: "Access road progress",
+                            expression: createExpression("Structure"),
+                            returnType: "Default"
+                        }
+                    },
+                    {
+                        type: "CIMPrimitiveOverride",
+                        primitiveName: "wire-pull-fill",
+                        propertyName: "Size",
+                        valueExpressionInfo: {
+                            type: "CIMExpressionInfo",
+                            title: "Access road progress",
+                            expression: createExpression("Wire_Pull"),
+                            returnType: "Default"
+                        }
+                    }
+                ]
+            }
+        })
+    });
     function createExpression(fieldName) {
         return "\n    var progress = Decode($feature." + fieldName + ",\n      \"100% Complete\", 1,\n      \"75% Complete\", 0.75,\n      \"50% Complete\", 0.50,\n      \"25% Complete\", 0.25,\n      \"Not Started\", 0,\n      \"NA\", 1,\n    -1);\n\n    var outerSize = " + symbolUtils_1.size + ";\n    var innerSize = outerSize * progress;\n    return IIF( innerSize < 0, 0, innerSize );\n  ";
     }

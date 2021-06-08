@@ -2,7 +2,7 @@ import { SimpleRenderer, UniqueValueRenderer } from "esri/renderers";
 import { CIMSymbol } from "esri/symbols";
 import Color = require("esri/Color");
 import UniqueValueInfo = require("esri/renderers/support/UniqueValueInfo");
-import { colorizeCIMSymbol, createCircleSymbolLayer, size } from "./symbolUtils";
+import { colorizeCIMSymbol, createCircleSymbolLayer, size, towerSymbolLayer } from "./symbolUtils";
 import { BarrierCIMSymbol, Forest_RoadCIMSymbol, FoundationCIMSymbol, PowerlineCIMSymbol, TowerCIMSymbol } from "./webStyles";
 
 // #b30000|#7c1158|#4421af|#1a53ff|#00b7c7|#8be04e|#ebdc78
@@ -22,6 +22,141 @@ export const stackedRenderer = new SimpleRenderer({
       symbol: {
         type: `CIMPointSymbol`,
         symbolLayers: [
+          // rings
+          createCircleSymbolLayer({
+            primitiveName: `access-rd-ring`,
+            anchorPoint: { x: 0, y: 0 },
+            color: colors[0],
+            isRing: true
+          }),
+          createCircleSymbolLayer({
+            primitiveName: `pad-site-ring`,
+            anchorPoint: { x: 0, y: 1 },
+            color: colors[3],
+            isRing: true
+          }),
+          createCircleSymbolLayer({
+            primitiveName: `foundation-ring`,
+            anchorPoint: { x: 0, y: 2 },
+            color: colors[2],
+            isRing: true
+          }),
+          createCircleSymbolLayer({
+            primitiveName: `structure-ring`,
+            anchorPoint: { x: 0, y: 3 },
+            color: colors[4],
+            isRing: true
+          }),
+          createCircleSymbolLayer({
+            primitiveName: `wire-pull-ring`,
+            anchorPoint: { x: 0, y: 4 },
+            color: colors[5],
+            isRing: true
+          }),
+
+          // fills
+          createCircleSymbolLayer({
+            primitiveName: `access-rd-fill`,
+            anchorPoint: { x: 0, y: 0 },
+            color: colors[0],
+            isRing: false
+          }),
+          createCircleSymbolLayer({
+            primitiveName: `pad-site-fill`,
+            anchorPoint: { x: 0, y: 1 },
+            color: colors[3],
+            isRing: false
+          }),
+          createCircleSymbolLayer({
+            primitiveName: `foundation-fill`,
+            anchorPoint: { x: 0, y: 2 },
+            color: colors[2],
+            isRing: false
+          }),
+          createCircleSymbolLayer({
+            primitiveName: `structure-fill`,
+            anchorPoint: { x: 0, y: 3 },
+            color: colors[4],
+            isRing: false
+          }),
+          createCircleSymbolLayer({
+            primitiveName: `wire-pull-fill`,
+            anchorPoint: { x: 0, y: 4 },
+            color: colors[5],
+            isRing: false
+          })
+        ]
+      },
+      primitiveOverrides: [
+        {
+          type: `CIMPrimitiveOverride`,
+          primitiveName: `access-rd-fill`,
+          propertyName: `Size`,
+          valueExpressionInfo: {
+            type: `CIMExpressionInfo`,
+            title: `Access road progress`,
+            expression: createExpression("Access_Rd"),
+            returnType: `Default`
+          }
+        },
+        {
+          type: `CIMPrimitiveOverride`,
+          primitiveName: `foundation-fill`,
+          propertyName: `Size`,
+          valueExpressionInfo: {
+            type: `CIMExpressionInfo`,
+            title: `Access road progress`,
+            expression: createExpression("Foundation"),
+            returnType: `Default`
+          }
+        },
+        {
+          type: `CIMPrimitiveOverride`,
+          primitiveName: `pad-site-fill`,
+          propertyName: `Size`,
+          valueExpressionInfo: {
+            type: `CIMExpressionInfo`,
+            title: `Access road progress`,
+            expression: createExpression("Pad_Site"),
+            returnType: `Default`
+          }
+        },
+        {
+          type: `CIMPrimitiveOverride`,
+          primitiveName: `structure-fill`,
+          propertyName: `Size`,
+          valueExpressionInfo: {
+            type: `CIMExpressionInfo`,
+            title: `Access road progress`,
+            expression: createExpression("Structure"),
+            returnType: `Default`
+          }
+        },
+        {
+          type: `CIMPrimitiveOverride`,
+          primitiveName: `wire-pull-fill`,
+          propertyName: `Size`,
+          valueExpressionInfo: {
+            type: `CIMExpressionInfo`,
+            title: `Access road progress`,
+            expression: createExpression("Wire_Pull"),
+            returnType: `Default`
+          }
+        }
+      ]
+    }
+  })
+});
+
+export const stackedRendererWithTower = new SimpleRenderer({
+  symbol: new CIMSymbol({
+    data: {
+      type: `CIMSymbolReference`,
+      symbol: {
+        type: `CIMPointSymbol`,
+        symbolLayers: [
+          towerSymbolLayer,
+
           // rings
           createCircleSymbolLayer({
             primitiveName: `access-rd-ring`,

@@ -61,6 +61,15 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                     });
                     renderers = [
                         {
+                            renderer: renderers_1.stackedRendererWithTower,
+                            id: "stacked-renderer-tower",
+                            action: new ActionButton({
+                                className: "esri-icon-maps",
+                                title: "Stacked renderer (tower)",
+                                id: "stacked-renderer-tower"
+                            })
+                        },
+                        {
                             renderer: renderers_1.stackedRenderer,
                             id: "stacked-renderer",
                             action: new ActionButton({

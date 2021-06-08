@@ -8,7 +8,7 @@ import LayerList = require("esri/widgets/LayerList");
 import ActionButton = require("esri/support/actions/ActionButton");
 import { createPopupTemplate } from "esri/support/popupUtils";
 
-import { accessRdWebStyleRenderer, accessRdWurmanRenderer, foundationWebStyleRenderer, foundationWurmanRenderer, padSiteWebStyleRenderer, padSiteWurmanRenderer, stackedRenderer, structureWebStyleRenderer, structureWurmanRenderer, wirePullWebStyleRenderer, wirePullWurmanRenderer } from "./renderers";
+import { accessRdWebStyleRenderer, accessRdWurmanRenderer, foundationWebStyleRenderer, foundationWurmanRenderer, padSiteWebStyleRenderer, padSiteWurmanRenderer, stackedRenderer, stackedRendererWithTower, structureWebStyleRenderer, structureWurmanRenderer, wirePullWebStyleRenderer, wirePullWurmanRenderer } from "./renderers";
 import { buffer } from "esri/geometry/geometryEngine";
 
 ( async () => {
@@ -35,6 +35,16 @@ import { buffer } from "esri/geometry/geometryEngine";
   });
 
   const renderers = [
+    {
+      renderer: stackedRendererWithTower,
+      id: "stacked-renderer-tower",
+      action: new ActionButton({
+        className: "esri-icon-maps",
+        title: "Stacked renderer (tower)",
+        id: "stacked-renderer-tower"
+      })
+    },
+
     {
       renderer: stackedRenderer,
       id: "stacked-renderer",
