@@ -34,11 +34,18 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/widgets/LayerList", "esri/support/actions/ActionButton", "esri/support/popupUtils", "./renderers", "esri/geometry/geometryEngine"], function (require, exports, WebMap, MapView, FeatureLayer, LayerList, ActionButton, popupUtils_1, renderers_1, geometryEngine_1) {
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
+define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/widgets/LayerList", "esri/widgets/Legend", "esri/support/actions/ActionButton", "esri/support/popupUtils", "./renderers", "esri/geometry/geometryEngine"], function (require, exports, WebMap, MapView, FeatureLayer, LayerList, Legend, ActionButton, popupUtils_1, renderers_1, geometryEngine_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     (function () { return __awaiter(void 0, void 0, void 0, function () {
-        var buff, structures, map, view, renderers, layerList;
+        var buff, structures, map, view, overViewRenderers, wurmanRenderers, webStyleRenderers, renderers, layerList;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -47,6 +54,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                         portalItem: {
                             id: "8d47d8981c514666b7c98196d63d1086"
                         },
+                        title: "Structure locations",
                         popupEnabled: true
                     });
                     map = new WebMap({
@@ -59,7 +67,7 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                         center: [-118.244, 34.052],
                         zoom: 12
                     });
-                    renderers = [
+                    overViewRenderers = [
                         {
                             renderer: renderers_1.stackedRendererWithTower,
                             id: "stacked-renderer-tower",
@@ -77,7 +85,9 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                 title: "Stacked renderer",
                                 id: "stacked-renderer"
                             })
-                        },
+                        }
+                    ];
+                    wurmanRenderers = [
                         {
                             renderer: renderers_1.accessRdWurmanRenderer,
                             id: "access-roads",
@@ -122,7 +132,9 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                                 title: "Wire Pull",
                                 id: "wire-pull"
                             })
-                        },
+                        }
+                    ];
+                    webStyleRenderers = [
                         {
                             renderer: renderers_1.accessRdWebStyleRenderer,
                             id: "access-roads-webstyle",
@@ -169,15 +181,21 @@ define(["require", "exports", "esri/WebMap", "esri/views/MapView", "esri/layers/
                             })
                         }
                     ];
+                    renderers = __spreadArrays(webStyleRenderers, wurmanRenderers, overViewRenderers);
                     layerList = new LayerList({
                         view: view,
                         listItemCreatedFunction: function (event) {
                             var item = event.item;
-                            item.actionsSections = [renderers.map(function (renderer) { return renderer.action; })];
+                            item.actionsSections = [
+                                webStyleRenderers.map(function (renderer) { return renderer.action; }),
+                                wurmanRenderers.map(function (renderer) { return renderer.action; }),
+                                overViewRenderers.map(function (renderer) { return renderer.action; })
+                            ];
                             item.actionsOpen = true;
                         }
                     });
                     view.ui.add(layerList, "top-right");
+                    view.ui.add(new Legend({ view: view }), "bottom-left");
                     layerList.on("trigger-action", function (event) {
                         var action = event.action;
                         var id = action.id;

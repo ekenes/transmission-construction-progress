@@ -1,5 +1,8 @@
 import { CIMSymbol } from "esri/symbols";
 
+// fetched from https://www.arcgis.com/home/item.html?id=1139097a105b402c887db20cda5f442a
+// © 2021 Adobe Stock. All rights reserved.
+
 export const TowerCIMSymbol = new CIMSymbol({
   data: {
     type: `CIMSymbolReference`,

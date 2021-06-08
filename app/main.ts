@@ -5,6 +5,7 @@ import MapView = require("esri/views/MapView");
 import FeatureLayer = require("esri/layers/FeatureLayer");
 import PopupTemplate = require("esri/PopupTemplate");
 import LayerList = require("esri/widgets/LayerList");
+import Legend = require("esri/widgets/Legend");
 import ActionButton = require("esri/support/actions/ActionButton");
 import { createPopupTemplate } from "esri/support/popupUtils";
 
@@ -19,6 +20,7 @@ import { buffer } from "esri/geometry/geometryEngine";
     portalItem: {
       id: "8d47d8981c514666b7c98196d63d1086"
     },
+    title: "Structure locations",
     popupEnabled: true
   });
 
@@ -34,7 +36,7 @@ import { buffer } from "esri/geometry/geometryEngine";
     zoom: 12
   });
 
-  const renderers = [
+  const overViewRenderers = [
     {
       renderer: stackedRendererWithTower,
       id: "stacked-renderer-tower",
@@ -44,7 +46,6 @@ import { buffer } from "esri/geometry/geometryEngine";
         id: "stacked-renderer-tower"
       })
     },
-
     {
       renderer: stackedRenderer,
       id: "stacked-renderer",
@@ -53,7 +54,10 @@ import { buffer } from "esri/geometry/geometryEngine";
         title: "Stacked renderer",
         id: "stacked-renderer"
       })
-    },
+    }
+  ];
+
+  const wurmanRenderers = [
     {
       renderer: accessRdWurmanRenderer,
       id: "access-roads",
@@ -98,9 +102,10 @@ import { buffer } from "esri/geometry/geometryEngine";
         title: "Wire Pull",
         id: "wire-pull"
       })
-    },
+    }
+  ];
 
-
+  const webStyleRenderers = [
     {
       renderer: accessRdWebStyleRenderer,
       id: "access-roads-webstyle",
@@ -148,15 +153,26 @@ import { buffer } from "esri/geometry/geometryEngine";
     }
   ];
 
+  const renderers = [
+    ...webStyleRenderers,
+    ...wurmanRenderers,
+    ...overViewRenderers
+  ];
+
   const layerList = new LayerList({
     view,
     listItemCreatedFunction: (event) => {
       const item = event.item as esri.ListItem;
-      item.actionsSections = [ renderers.map( renderer => renderer.action ) ] as any;
+      item.actionsSections = [
+        webStyleRenderers.map( renderer => renderer.action ),
+        wurmanRenderers.map( renderer => renderer.action ),
+        overViewRenderers.map( renderer => renderer.action )
+      ] as any;
       item.actionsOpen = true;
     }
   });
   view.ui.add(layerList, "top-right");
+  view.ui.add(new Legend({ view }), "bottom-left");
 
   layerList.on("trigger-action", (event) => {
     const { action } = event;

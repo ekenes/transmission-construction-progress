@@ -525,6 +525,9 @@ export const wirePullWebStyleRenderer = createUniqueValueRenderer(PowerlineCIMSy
 function createUniqueValueRenderer(symbol: CIMSymbol, field: string): UniqueValueRenderer {
   return new UniqueValueRenderer({
     field,
+    legendOptions: {
+      title: field.replace("_", " ")
+    },
     uniqueValueInfos: [
       new UniqueValueInfo({
         value: "100% Complete",

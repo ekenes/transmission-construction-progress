@@ -480,6 +480,9 @@ define(["require", "exports", "esri/renderers", "esri/symbols", "esri/Color", "e
     function createUniqueValueRenderer(symbol, field) {
         return new renderers_1.UniqueValueRenderer({
             field: field,
+            legendOptions: {
+                title: field.replace("_", " ")
+            },
             uniqueValueInfos: [
                 new UniqueValueInfo({
                     value: "100% Complete",
